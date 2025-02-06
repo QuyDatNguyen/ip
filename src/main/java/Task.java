@@ -27,10 +27,10 @@ public class Task {
     public String toString() {
         String status;
         if (isDone) {
-            status = "[X]";
+            status = "[X] ";
         }
         else {
-            status = "[ ]";
+            status = "[ ] ";
         }
 
         return status + this.description;

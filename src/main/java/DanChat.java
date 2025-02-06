@@ -12,9 +12,7 @@ public class DanChat {
             if (task == null) {
                 break;
             }
-            String taskName = task.getDescription();
-            String taskStatusIcon = task.getStatusIcon();
-            System.out.println("\t" + taskNumber + ". " + "[" + taskStatusIcon + "] " + taskName);
+            System.out.println("\t" + taskNumber + ". " + task);
             taskNumber++;
         }
     }
@@ -42,13 +40,15 @@ public class DanChat {
         text = in.nextLine();
 
         while (true) {
+
             String[] words = text.split(" ", 2);
             String command = words[0];
-            String argument;
+//            String description;
+            String detail;
             if (words.length == 2) {
-                argument = words[1];
+                detail = words[1];
             } else {
-                argument = null;
+                detail = null;
             }
 
             if (text.trim().equals("bye")) {
@@ -60,7 +60,7 @@ public class DanChat {
                 printTaskList(tasks);
                 System.out.println(line);
             }
-            else if (command.equals("unmark") && isValidInteger(argument)) {
+            else if (command.equals("unmark") && isValidInteger(detail)) {
 //                String[] words = text.split(" ");
                 int taskNumber = Integer.parseInt(words[1]);
                 if (taskNumber > taskCount) {
@@ -68,11 +68,11 @@ public class DanChat {
                 } else {
                     Task changeTask = tasks[taskNumber - 1];
                     changeTask.setDone(false);
-                    printMessage("Ok, I have marked this task as not done yet\n \t"
+                    printMessage("Ok, I have marked this task as not done yet" + System.lineSeparator() + "\t"
                             + "[" + changeTask.getStatusIcon() + "] " + changeTask.getDescription());
                 }
             }
-            else if (command.equals("mark") && isValidInteger(argument)) {
+            else if (command.equals("mark") && isValidInteger(detail)) {
 //                String[] words = text.split(" ");
                 int taskNumber = Integer.parseInt(words[1]);
                 if (taskNumber > taskCount) {
@@ -80,13 +80,57 @@ public class DanChat {
                 } else {
                     Task changeTask = tasks[taskNumber - 1];
                     changeTask.setDone(true);
-                    printMessage("Nice! I have marked this task as done\n \t"
+                    printMessage("Nice! I have marked this task as done" + System.lineSeparator() +  "\t"
                             + "[" + changeTask.getStatusIcon() + "] " + changeTask.getDescription());
                 }
             }
+            else if (command.equals("todo")) {
+                Todo todo = new Todo(detail);
+                tasks[taskCount] = todo;
+                taskCount++;
+                printMessage("Add new todo in your list: " + todo);
+            }
+            else if (command.equals("deadline") && detail != null) {
+                String[] detailParts = detail.split(" /by ", 2);
+                if (detailParts.length < 2) {
+                    printMessage("Please provide date after /by");
+                    text = in.nextLine();
+                    continue;
+                }
+                String description = detailParts[0];
+                String by = detailParts[1];
+                Deadline deadline = new Deadline(description, by);
+                tasks[taskCount] = deadline;
+                taskCount++;
+                printMessage("Add new deadline in your list: " + deadline);
+            }
+            else if (command.equals("event") && detail != null) {
+                String[] detailParts = detail.split(" /from ", 2);
+                if (detailParts.length < 2) {
+                    printMessage("Please provide starting date after /from");
+                    text = in.nextLine();
+                    continue;
+                }
+                String description = detailParts[0];
+
+                String duration = detailParts[1];
+                String[] durationParts = duration.split(" /to ", 2);
+                if (durationParts.length < 2) {
+                    printMessage("Please provide ending date after /to");
+                    text = in.nextLine();
+                    continue;
+                }
+                String from = durationParts[0];
+                String to = durationParts[1];
+
+                Event event = new Event(description, from, to);
+                tasks[taskCount] = event;
+                taskCount++;
+                printMessage("Add new event in your list: " + event);
+            }
             else {
-                Task t = new Task(text);
-                tasks[taskCount] = t;
+                Task task = new Task(text);
+                tasks[taskCount] = task;
                 taskCount++;
                 printMessage("added: " + text);
             }
