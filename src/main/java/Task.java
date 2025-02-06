@@ -19,7 +19,20 @@ public class Task {
         return isDone;
     }
 
-    public void setDone(boolean done) {
-        isDone = done;
+    public void setDone(boolean isDone) {
+        this.isDone = isDone;
+    }
+
+    @Override
+    public String toString() {
+        String status;
+        if (isDone) {
+            status = "[X]";
+        }
+        else {
+            status = "[ ]";
+        }
+
+        return status + this.description;
     }
 }

@@ -42,7 +42,15 @@ public class DanChat {
         text = in.nextLine();
 
         while (true) {
-            String[] words = text.split(" ");
+            String[] words = text.split(" ", 2);
+            String command = words[0];
+            String argument;
+            if (words.length == 2) {
+                argument = words[1];
+            } else {
+                argument = null;
+            }
+
             if (text.trim().equals("bye")) {
                 printMessage("Bye. Hope to see you again soon!");
                 break;
@@ -51,7 +59,8 @@ public class DanChat {
                 System.out.println(line);
                 printTaskList(tasks);
                 System.out.println(line);
-            } else if (words[0].equals("unmark") && words.length == 2 && isValidInteger(words[1])) {
+            }
+            else if (command.equals("unmark") && isValidInteger(argument)) {
 //                String[] words = text.split(" ");
                 int taskNumber = Integer.parseInt(words[1]);
                 if (taskNumber > taskCount) {
@@ -62,7 +71,8 @@ public class DanChat {
                     printMessage("Ok, I have marked this task as not done yet\n \t"
                             + "[" + changeTask.getStatusIcon() + "] " + changeTask.getDescription());
                 }
-            } else if (words[0].equals("mark") && words.length == 2 && isValidInteger(words[1])) {
+            }
+            else if (command.equals("mark") && isValidInteger(argument)) {
 //                String[] words = text.split(" ");
                 int taskNumber = Integer.parseInt(words[1]);
                 if (taskNumber > taskCount) {
@@ -80,8 +90,7 @@ public class DanChat {
                 taskCount++;
                 printMessage("added: " + text);
             }
-            Scanner nextIn = new Scanner(System.in);
-            text = nextIn.nextLine();
+            text = in.nextLine();
         }
     }
 }
