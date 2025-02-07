@@ -37,73 +37,84 @@ public class DanChat {
     private static Task[] tasks;
     private static int taskCount;
 
-//    private static String command;
-//    private static String detail;
-    
+    private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
         showWelcomeMessage();
         initTaskList();
-
-
-
         while (true) {
-            String text;
-            Scanner SCANNER = new Scanner(System.in);
-            text = SCANNER.nextLine();
-
-            String[] words = text.split(" ", 2);
-            String command = words[0];
-            String detail;
-            if (words.length == 2) {
-                detail = words[1];
-            } else {
-                detail = null;
-            }
-
-            if (isValidByeCommand(text)) {
-                executeByeCommand();
-            }
-            else if (isValidListCommand(text)) {
-                executeListCommand(tasks);
-            }
-            else if (isValidUnmarkCommand(command, detail)) {
-                executeUnmarkCommand(detail);
-            }
-            else if (isValidMarkCommand(command, detail)) {
-                executeMarkCommand(detail);
-            }
-            else if (isValidTodoCommand(command)) {
-                executeTodoCommand(detail);
-            }
-            else if (isValidDeadlineCommand(command, detail)) {
-                executeDeadlineCommand(detail);
-            }
-            else if (isValidEventCommand(command, detail)) {
-                executeEventCommand(detail);
-            }
-            else {
-                executeAddTask(text);
-            }
+            String userInput = getUserInput();
+            processUserInput(userInput);
         }
     }
 
+    private static void processUserInput(String userInput) {
+        String[] splitInput = splitCommandAndDetail(userInput);
+        String command = splitInput[0].trim();
+        String detail = splitInput[1].trim();
+
+        executeUserCommandAndDetail(command, detail);
+    }
+
+    private static String[] splitCommandAndDetail(String userInput) {
+        String[] commandAndDetail = userInput.split(" ", 2);
+        if (commandAndDetail.length == 2) {
+            return commandAndDetail;
+        }
+        return new String[] {commandAndDetail[0], null};
+    }
+
+    private static void executeUserCommandAndDetail(String command, String detail) {
+        if (isValidByeCommand(command, detail)) {
+            executeByeCommand();
+        }
+        else if (isValidListCommand(command, detail)) {
+            executeListCommand(tasks);
+        }
+        else if (isValidUnmarkCommand(command, detail)) {
+            executeUnmarkCommand(detail);
+        }
+        else if (isValidMarkCommand(command, detail)) {
+            executeMarkCommand(detail);
+        }
+        else if (isValidTodoCommand(command)) {
+            executeTodoCommand(detail);
+        }
+        else if (isValidDeadlineCommand(command, detail)) {
+            executeDeadlineCommand(detail);
+        }
+        else if (isValidEventCommand(command, detail)) {
+            executeEventCommand(detail);
+        }
+        else {
+            executeAddTask(command, detail);
+        }
+    }
+
+    private static String getUserInput() {
+        String userInput = SCANNER.nextLine();
+        while (userInput.trim().isEmpty()) {
+            userInput = SCANNER.nextLine();
+        }
+        return userInput;
+    }
+
     private static void executeEventCommand(String detail) {
-        String[] detailParts = detail.split(EVENT_BEGIN_DATE_SEPERATOR, 2);
-        if (detailParts.length < 2) {
+        String[] splitDetails = detail.split(EVENT_BEGIN_DATE_SEPERATOR, 2);
+        if (splitDetails.length < 2) {
             printMessage(ERROR_MISSING_BEGIN_DATE);
             return;
         }
-        String description = detailParts[0];
+        String description = splitDetails[0].trim();
 
-        String duration = detailParts[1];
-        String[] durationParts = duration.split(EVENT_END_DATE_SEPERATOR, 2);
-        if (durationParts.length < 2) {
+        String duration = splitDetails[1].trim();
+        String[] splitDurations = duration.split(EVENT_END_DATE_SEPERATOR, 2);
+        if (splitDurations.length < 2) {
             printMessage(ERROR_MISSING_END_DATE);
             return;
         }
-        String from = durationParts[0];
-        String to = durationParts[1];
+        String from = splitDurations[0].trim();
+        String to = splitDurations[1].trim();
 
         Event event = new Event(description, from, to);
         tasks[taskCount] = event;
@@ -112,25 +123,31 @@ public class DanChat {
     }
 
     private static void executeDeadlineCommand(String detail) {
-        String[] detailParts = detail.split(DEADLINE_SEPERATOR, 2);
-        if (detailParts.length < 2) {
+        String[] splitDetails = detail.split(DEADLINE_SEPERATOR, 2);
+        if (splitDetails.length < 2) {
             printMessage(ERROR_MISSING_DEADLINE_DATE);
             return;
         }
-
-        String description = detailParts[0];
-        String by = detailParts[1];
+        String description = splitDetails[0].trim();
+        String by = splitDetails[1].trim();
+        
         Deadline deadline = new Deadline(description, by);
         tasks[taskCount] = deadline;
         taskCount++;
         printMessage(COMMAND_DEADLINE_MESSAGE + deadline);
     }
 
-    private static void executeAddTask(String text) {
-        Task task = new Task(text);
+    private static void executeAddTask(String command, String detail) {
+
+        String newTask = command;
+        if (detail != null) {
+            newTask = newTask + " " + detail;
+        }
+
+        Task task = new Task(newTask);
         tasks[taskCount] = task;
         taskCount++;
-        printMessage(COMMAND_ADD_MESSAGE + text);
+        printMessage(COMMAND_ADD_MESSAGE + newTask);
     }
 
     private static void executeTodoCommand(String detail) {
@@ -181,20 +198,20 @@ public class DanChat {
         return command.equals(COMMAND_TODO_WORD);
     }
 
-    private static boolean isValidListCommand(String text) {
-        return text.trim().equals(COMMAND_LIST_WORD);
+    private static boolean isValidListCommand(String command, String detail) {
+        return command.trim().equals(COMMAND_LIST_WORD) && detail == null;
     }
 
-    private static boolean isValidByeCommand(String text) {
-        return text.trim().equals(COMMAND_BYE_WORD);
+    private static boolean isValidByeCommand(String command, String detail) {
+        return command.trim().equals(COMMAND_BYE_WORD) && detail == null;
     }
 
     private static boolean isValidMarkCommand(String command, String detail) {
-        return command.equals(COMMAND_MARK_WORD) && isValidInteger(detail);
+        return command.equals(COMMAND_MARK_WORD) && isValidIndex(detail);
     }
 
     private static boolean isValidUnmarkCommand(String command, String detail) {
-        return command.equals(COMMAND_UNMARK_WORD) && isValidInteger(detail);
+        return command.equals(COMMAND_UNMARK_WORD) && isValidIndex(detail);
     }
 
     private static void initTaskList() {
@@ -231,6 +248,10 @@ public class DanChat {
             System.out.println("\t" + taskNumber + ". " + task);
             taskNumber++;
         }
+    }
+
+    private static boolean isValidIndex (String str) {
+        return isValidInteger(str) && Integer.parseInt(str) > 0;
     }
 
     private static boolean isValidInteger(String str) {
