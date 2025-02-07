@@ -1,7 +1,103 @@
-Hello from
- ____        _        
-|  _ \ _   _| | _____ 
-| | | | | | | |/ / _ \
-| |_| | |_| |   <  __/
-|____/ \__,_|_|\_\___|
-
+=============================
+Hello! I'm DanChat
+What can I do for you?
+=============================
+=============================
+=============================
+=============================
+	added: add a default task
+=============================
+=============================
+	Add new todo in your list: [T][ ] add new todo event
+=============================
+=============================
+	1. [ ] add a default task
+	2. [T][ ] add new todo event
+=============================
+=============================
+	Nice! I have marked this task as done
+	[X] add new todo event
+=============================
+=============================
+	1. [ ] add a default task
+	2. [T][X] add new todo event
+=============================
+=============================
+	added: mark -1
+=============================
+=============================
+	Ok, I have marked this task as not done yet
+	[ ] add new todo event
+=============================
+=============================
+	added: unmark
+=============================
+=============================
+	1. [ ] add a default task
+	2. [T][ ] add new todo event
+	3. [ ] mark -1
+	4. [ ] unmark
+=============================
+=============================
+	added: mark as a task
+=============================
+=============================
+	added: unmark as a task
+=============================
+=============================
+	1. [ ] add a default task
+	2. [T][ ] add new todo event
+	3. [ ] mark -1
+	4. [ ] unmark
+	5. [ ] mark as a task
+	6. [ ] unmark as a task
+=============================
+=============================
+	Please provide date after /by
+=============================
+=============================
+	Please provide date after /by
+=============================
+=============================
+	Add new deadline in your list: [D][ ] deadline with date by dl date
+=============================
+=============================
+	1. [ ] add a default task
+	2. [T][ ] add new todo event
+	3. [ ] mark -1
+	4. [ ] unmark
+	5. [ ] mark as a task
+	6. [ ] unmark as a task
+	7. [D][ ] deadline with date by dl date
+=============================
+=============================
+	Please provide starting date after /from
+=============================
+=============================
+	Please provide starting date after /from
+=============================
+=============================
+	Please provide starting date after /from
+=============================
+=============================
+	Please provide ending date after /to
+=============================
+=============================
+	Please provide ending date after /to
+=============================
+=============================
+	Add new event in your list: [E][ ] event with dates from start to end
+=============================
+=============================
+	1. [ ] add a default task
+	2. [T][ ] add new todo event
+	3. [ ] mark -1
+	4. [ ] unmark
+	5. [ ] mark as a task
+	6. [ ] unmark as a task
+	7. [D][ ] deadline with date by dl date
+	8. [E][ ] event with dates from start to end
+=============================
+=============================
+	Bye. Hope to see you again soon!
+=============================

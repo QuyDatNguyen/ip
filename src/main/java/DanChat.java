@@ -50,8 +50,8 @@ public class DanChat {
 
     private static void processUserInput(String userInput) {
         String[] splitInput = splitCommandAndDetail(userInput);
-        String command = splitInput[0].trim();
-        String detail = splitInput[1].trim();
+        String command = splitInput[0];
+        String detail = splitInput[1];
 
         executeUserCommandAndDetail(command, detail);
     }
@@ -130,7 +130,7 @@ public class DanChat {
         }
         String description = splitDetails[0].trim();
         String by = splitDetails[1].trim();
-        
+
         Deadline deadline = new Deadline(description, by);
         tasks[taskCount] = deadline;
         taskCount++;
@@ -221,9 +221,8 @@ public class DanChat {
 
     private static void showWelcomeMessage() {
         System.out.println(LINE);
-        System.out.println(" /\\_/\\  ");
-        System.out.println("( o.o ) " + " " + "Hello! I'm DanChat");
-        System.out.println(" > ^ <  " + " " + "What can I do for you?");
+        System.out.println("Hello! I'm DanChat");
+        System.out.println("What can I do for you?");
         System.out.println(LINE);
     }
 

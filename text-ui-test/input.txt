@@ -1,0 +1,25 @@
+list
+add a default task
+todo add new todo event
+list
+mark 2
+list
+mark -1
+unmark 2
+unmark
+list
+mark as a task
+unmark as a task
+list
+deadline deadline with no date
+deadline deadline with null date /by
+deadline deadline with date /by dl date
+list
+event event with no date
+event event with null start date /from
+event event with only end date /to
+event event with no end date /from start
+event event with null end date /from start /to
+event event with dates /from start /to end
+list
+bye
