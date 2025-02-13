@@ -10,7 +10,7 @@ public class DanChat {
 
     private static final String COMMAND_LIST_WORD = "list";
 
-    private static final String ERROR_NOT_FOUND_TASK_MESSAGE = "Sorry, there is no task with index ";
+    private static final String ERROR_NOT_FOUND_TASK_MESSAGE = "Unfounded task with index ";
     private static final String COMMAND_UNMARK_WORD = "unmark";
     private static final String COMMAND_UNMARK_MESSAGE = "Ok, I have marked this task as not done yet";
 
@@ -21,18 +21,20 @@ public class DanChat {
     private static final String COMMAND_TODO_MESSAGE = "Add new todo in your list: ";
 
     private static final String DEADLINE_SEPERATOR = " /by ";
-    private static final String ERROR_MISSING_DEADLINE_DATE = "Please provide date after /by";
+    private static final String ERROR_MISSING_DEADLINE_DATE = "Missing deadline date. Please provide date after /by";
     private static final String COMMAND_DEADLINE_WORD = "deadline";
     private static final String COMMAND_DEADLINE_MESSAGE = "Add new deadline in your list: ";
 
     private static final String EVENT_BEGIN_DATE_SEPERATOR = " /from ";
     private static final String EVENT_END_DATE_SEPERATOR = " /to ";
-    private static final String ERROR_MISSING_BEGIN_DATE = "Please provide starting date after /from";
-    private static final String ERROR_MISSING_END_DATE = "Please provide ending date after /to";
+    private static final String ERROR_MISSING_BEGIN_DATE = "Missing starting date. Please provide starting date after /from";
+    private static final String ERROR_MISSING_END_DATE = "Missing ending date. Please provide ending date after /to";
     private static final String COMMAND_EVENT_WORD = "event";
     private static final String COMMAND_EVENT_MESSAGE = "Add new event in your list: ";
 
     private static final String COMMAND_ADD_MESSAGE = "added: ";
+    public static final String ERROR_EMPTY_DETAIL = "Details must not be blank";
+    public static final String ERROR_INVALID_INDEX_FORMAT = "Wrong index format. Index must be a positive integer";
 
     private static Task[] tasks;
     private static int taskCount;
@@ -65,29 +67,26 @@ public class DanChat {
     }
 
     private static void executeUserCommandAndDetail(String command, String detail) {
-        if (isValidByeCommand(command, detail)) {
-            executeByeCommand();
-        }
-        else if (isValidListCommand(command, detail)) {
-            executeListCommand(tasks);
-        }
-        else if (isValidUnmarkCommand(command, detail)) {
-            executeUnmarkCommand(detail);
-        }
-        else if (isValidMarkCommand(command, detail)) {
-            executeMarkCommand(detail);
-        }
-        else if (isValidTodoCommand(command)) {
-            executeTodoCommand(detail);
-        }
-        else if (isValidDeadlineCommand(command, detail)) {
-            executeDeadlineCommand(detail);
-        }
-        else if (isValidEventCommand(command, detail)) {
-            executeEventCommand(detail);
-        }
-        else {
-            executeAddTask(command, detail);
+        try {
+            if (isValidByeCommand(command, detail)) {
+                executeByeCommand();
+            } else if (isValidListCommand(command, detail)) {
+                executeListCommand(tasks);
+            } else if (isValidUnmarkCommand(command, detail)) {
+                executeUnmarkCommand(detail);
+            } else if (isValidMarkCommand(command, detail)) {
+                executeMarkCommand(detail);
+            } else if (isValidTodoCommand(command, detail)) {
+                executeTodoCommand(detail);
+            } else if (isValidDeadlineCommand(command, detail)) {
+                executeDeadlineCommand(detail);
+            } else if (isValidEventCommand(command, detail)) {
+                executeEventCommand(detail);
+            } else {
+                throw new IllegalCommandException("Unknown Command: " + command + " " + detail);
+            }
+        } catch (DanException e) {
+            System.out.println("Caught Exception: " + e.getMessage());
         }
     }
 
@@ -99,19 +98,17 @@ public class DanChat {
         return userInput;
     }
 
-    private static void executeEventCommand(String detail) {
+    private static void executeEventCommand(String detail) throws MissingDateException {
         String[] splitDetails = detail.split(EVENT_BEGIN_DATE_SEPERATOR, 2);
         if (splitDetails.length < 2) {
-            printMessage(ERROR_MISSING_BEGIN_DATE);
-            return;
+            throw new MissingDateException(ERROR_MISSING_BEGIN_DATE);
         }
         String description = splitDetails[0].trim();
 
         String duration = splitDetails[1].trim();
         String[] splitDurations = duration.split(EVENT_END_DATE_SEPERATOR, 2);
         if (splitDurations.length < 2) {
-            printMessage(ERROR_MISSING_END_DATE);
-            return;
+            throw new MissingDateException(ERROR_MISSING_END_DATE);
         }
         String from = splitDurations[0].trim();
         String to = splitDurations[1].trim();
@@ -122,11 +119,10 @@ public class DanChat {
         printMessage(COMMAND_EVENT_MESSAGE + event);
     }
 
-    private static void executeDeadlineCommand(String detail) {
+    private static void executeDeadlineCommand(String detail) throws MissingDateException {
         String[] splitDetails = detail.split(DEADLINE_SEPERATOR, 2);
         if (splitDetails.length < 2) {
-            printMessage(ERROR_MISSING_DEADLINE_DATE);
-            return;
+            throw new MissingDateException(ERROR_MISSING_DEADLINE_DATE);
         }
         String description = splitDetails[0].trim();
         String by = splitDetails[1].trim();
@@ -162,10 +158,10 @@ public class DanChat {
         System.exit(0);
     }
 
-    private static void executeMarkCommand(String detail) {
+    private static void executeMarkCommand(String detail) throws IllegalTaskException {
         int taskNumber = Integer.parseInt(detail);
         if (taskNumber > taskCount) {
-            printMessage(ERROR_NOT_FOUND_TASK_MESSAGE + taskNumber);
+            throw new IllegalTaskException(ERROR_NOT_FOUND_TASK_MESSAGE + taskNumber);
         } else {
             Task changeTask = tasks[taskNumber - 1];
             changeTask.setDone(true);
@@ -174,10 +170,10 @@ public class DanChat {
         }
     }
 
-    private static void executeUnmarkCommand(String detail) {
+    private static void executeUnmarkCommand(String detail) throws IllegalTaskException {
         int taskNumber = Integer.parseInt(detail);
         if (taskNumber > taskCount) {
-            printMessage(ERROR_NOT_FOUND_TASK_MESSAGE + taskNumber);
+            throw new IllegalTaskException(ERROR_NOT_FOUND_TASK_MESSAGE + taskNumber);
         } else {
             Task changeTask = tasks[taskNumber - 1];
             changeTask.setDone(false);
@@ -186,16 +182,34 @@ public class DanChat {
         }
     }
 
-    private static boolean isValidEventCommand(String command, String detail) {
-        return command.equals(COMMAND_EVENT_WORD) && detail != null;
+    private static boolean isValidEventCommand(String command, String detail) throws EmptyTaskDetailException {
+        if (!command.equals(COMMAND_EVENT_WORD)) {
+            return false;
+        }
+        if (detail == null || detail.trim().isEmpty()) {
+            throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
+        }
+        return true;
     }
 
-    private static boolean isValidDeadlineCommand(String command, String detail) {
-        return command.equals(COMMAND_DEADLINE_WORD) && detail != null;
+    private static boolean isValidDeadlineCommand(String command, String detail) throws EmptyTaskDetailException {
+        if (!command.equals(COMMAND_DEADLINE_WORD)) {
+            return false;
+        }
+        if (detail == null || detail.trim().isEmpty()) {
+            throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
+        }
+        return true;
     }
 
-    private static boolean isValidTodoCommand(String command) {
-        return command.equals(COMMAND_TODO_WORD);
+    private static boolean isValidTodoCommand(String command, String detail) throws EmptyTaskDetailException {
+        if (!command.equals(COMMAND_TODO_WORD)) {
+            return false;
+        }
+        if (detail == null || detail.trim().isEmpty()) {
+            throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
+        }
+        return true;
     }
 
     private static boolean isValidListCommand(String command, String detail) {
@@ -206,11 +220,11 @@ public class DanChat {
         return command.trim().equals(COMMAND_BYE_WORD) && detail == null;
     }
 
-    private static boolean isValidMarkCommand(String command, String detail) {
+    private static boolean isValidMarkCommand(String command, String detail) throws InvalidIndexException {
         return command.equals(COMMAND_MARK_WORD) && isValidIndex(detail);
     }
 
-    private static boolean isValidUnmarkCommand(String command, String detail) {
+    private static boolean isValidUnmarkCommand(String command, String detail) throws InvalidIndexException {
         return command.equals(COMMAND_UNMARK_WORD) && isValidIndex(detail);
     }
 
@@ -249,8 +263,11 @@ public class DanChat {
         }
     }
 
-    private static boolean isValidIndex (String str) {
-        return isValidInteger(str) && Integer.parseInt(str) > 0;
+    private static boolean isValidIndex (String str) throws InvalidIndexException {
+        if (!isValidInteger(str) || Integer.parseInt(str) <= 0) {
+            throw new InvalidIndexException(ERROR_INVALID_INDEX_FORMAT);
+        }
+        return true;
     }
 
     private static boolean isValidInteger(String str) {
