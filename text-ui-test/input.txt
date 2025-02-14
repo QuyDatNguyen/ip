@@ -1,20 +1,24 @@
 list
-add a default task
+add but not valid command
+todo
 todo add new todo event
 list
 mark 2
-list
 mark -1
+mark
+mark 1
+list
 unmark 2
+unmark -1
 unmark
+unmark 2
 list
-mark as a task
-unmark as a task
-list
+deadline
 deadline deadline with no date
 deadline deadline with null date /by
 deadline deadline with date /by dl date
 list
+event
 event event with no date
 event event with null start date /from
 event event with only end date /to
