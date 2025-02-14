@@ -1,3 +1,11 @@
+package danchat.ui;
+
+import danchat.exception.*;
+import danchat.task.Deadline;
+import danchat.task.Event;
+import danchat.task.Task;
+import danchat.task.Todo;
+
 import java.util.Scanner;
 
 public class DanChat {
