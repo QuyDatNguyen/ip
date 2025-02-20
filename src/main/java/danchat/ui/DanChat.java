@@ -5,6 +5,10 @@ import danchat.task.Deadline;
 import danchat.task.Event;
 import danchat.task.Task;
 import danchat.task.Todo;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.File;
+import java.io.FileWriter;
 
 import java.util.Scanner;
 
@@ -47,14 +51,28 @@ public class DanChat {
     private static Task[] tasks;
     private static int taskCount;
 
+    private static File file = new File("tasks.txt");
+
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
         showWelcomeMessage();
         initTaskList();
+        initTaskListFile();
         while (true) {
             String userInput = getUserInput();
             processUserInput(userInput);
+        }
+    }
+
+    private static void initTaskListFile() {
+        try {
+            if (file.createNewFile()) {
+                System.out.println("Task list file not found. Create new file at " + file.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
         }
     }
 
@@ -82,14 +100,19 @@ public class DanChat {
                 executeListCommand(tasks);
             } else if (isValidUnmarkCommand(command, detail)) {
                 executeUnmarkCommand(detail);
+                saveChangeToFile();
             } else if (isValidMarkCommand(command, detail)) {
                 executeMarkCommand(detail);
+                saveChangeToFile();
             } else if (isValidTodoCommand(command, detail)) {
                 executeTodoCommand(detail);
+                saveChangeToFile();
             } else if (isValidDeadlineCommand(command, detail)) {
                 executeDeadlineCommand(detail);
+                saveChangeToFile();
             } else if (isValidEventCommand(command, detail)) {
                 executeEventCommand(detail);
+                saveChangeToFile();
             } else {
                 throw new IllegalCommandException("Unknown Command: " + command + " " + detail);
             }
@@ -284,6 +307,29 @@ public class DanChat {
             return true;
         } catch (NumberFormatException e) {
             return false;
+        }
+    }
+
+    private static void writeToFile(String filePath, String taskToAppend) throws IOException {
+        FileWriter fw = new FileWriter(filePath, false); // create a FileWriter in append mode
+        fw.write(taskToAppend);
+        fw.close();
+    }
+
+    private static String taskListText() {
+        String taskListText = "";
+        for (Task task: tasks) {
+            taskListText = taskListText + task + System.lineSeparator();
+        }
+        return taskListText;
+    }
+
+    private static void saveChangeToFile() {
+        String taskListText = taskListText();
+        try {
+            writeToFile("tasks.txt", taskListText);
+        } catch (IOException e) {
+            System.out.println("Something went wrong: " + e.getMessage());
         }
     }
 }
