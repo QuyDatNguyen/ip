@@ -6,6 +6,8 @@ import danchat.task.Event;
 import danchat.task.Task;
 import danchat.task.Todo;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class DanChat {
@@ -40,18 +42,19 @@ public class DanChat {
     private static final String COMMAND_EVENT_WORD = "event";
     private static final String COMMAND_EVENT_MESSAGE = "Add new event in your list: ";
 
-    private static final String COMMAND_ADD_MESSAGE = "added: ";
-    public static final String ERROR_EMPTY_DETAIL = "Details must not be blank";
-    public static final String ERROR_INVALID_INDEX_FORMAT = "Wrong index format. Index must be a positive integer";
+    private static final String ERROR_EMPTY_DETAIL = "Details must not be blank";
+    private static final String ERROR_INVALID_INDEX_FORMAT = "Wrong index format. Index must be a positive integer";
+    private static final String COMMAND_DELETE_MESSAGE = "I have deleted this task for you: ";
 
-    private static Task[] tasks;
+    //    private static Task[] tasks;
+    private static ArrayList<Task> taskList = new ArrayList<>();
     private static int taskCount;
 
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
         showWelcomeMessage();
-        initTaskList();
+//        initTaskList();
         while (true) {
             String userInput = getUserInput();
             processUserInput(userInput);
@@ -79,7 +82,8 @@ public class DanChat {
             if (isValidByeCommand(command, detail)) {
                 executeByeCommand();
             } else if (isValidListCommand(command, detail)) {
-                executeListCommand(tasks);
+//                executeListCommand(tasks);
+                executeListCommand(taskList);
             } else if (isValidUnmarkCommand(command, detail)) {
                 executeUnmarkCommand(detail);
             } else if (isValidMarkCommand(command, detail)) {
@@ -90,6 +94,8 @@ public class DanChat {
                 executeDeadlineCommand(detail);
             } else if (isValidEventCommand(command, detail)) {
                 executeEventCommand(detail);
+            } else if (isValidDeleteCommand(command, detail)) {
+                executeDeleteCommand(detail);
             } else {
                 throw new IllegalCommandException("Unknown Command: " + command + " " + detail);
             }
@@ -122,7 +128,8 @@ public class DanChat {
         String to = splitDurations[1].trim();
 
         Event event = new Event(description, from, to);
-        tasks[taskCount] = event;
+//        tasks[taskCount] = event;
+        taskList.add(event);
         taskCount++;
         printMessage(COMMAND_EVENT_MESSAGE + event);
     }
@@ -136,29 +143,30 @@ public class DanChat {
         String by = splitDetails[1].trim();
 
         Deadline deadline = new Deadline(description, by);
-        tasks[taskCount] = deadline;
+//        tasks[taskCount] = deadline;
+        taskList.add(deadline);
         taskCount++;
         printMessage(COMMAND_DEADLINE_MESSAGE + deadline);
     }
 
-    private static void executeAddTask(String command, String detail) {
-
-        String newTask = command;
-        if (detail != null) {
-            newTask = newTask + " " + detail;
-        }
-
-        Task task = new Task(newTask);
-        tasks[taskCount] = task;
-        taskCount++;
-        printMessage(COMMAND_ADD_MESSAGE + newTask);
-    }
-
     private static void executeTodoCommand(String detail) {
         Todo todo = new Todo(detail);
-        tasks[taskCount] = todo;
+//        tasks[taskCount] = todo;
+        taskList.add(todo);
         taskCount++;
         printMessage(COMMAND_TODO_MESSAGE + todo);
+    }
+
+    private static void executeDeleteCommand(String detail) throws IllegalTaskException {
+        int taskNumber = Integer.parseInt(detail);
+        if (taskNumber > taskCount) {
+            throw new IllegalTaskException(ERROR_NOT_FOUND_TASK_MESSAGE + taskNumber);
+        } else {
+            Task deleteTask = taskList.get(taskNumber - 1);
+            taskList.remove(taskNumber - 1);
+            taskCount--;
+            printMessage(COMMAND_DELETE_MESSAGE + deleteTask);
+        }
     }
 
     private static void executeByeCommand() {
@@ -171,7 +179,8 @@ public class DanChat {
         if (taskNumber > taskCount) {
             throw new IllegalTaskException(ERROR_NOT_FOUND_TASK_MESSAGE + taskNumber);
         } else {
-            Task changeTask = tasks[taskNumber - 1];
+//            Task changeTask = tasks[taskNumber - 1];
+            Task changeTask = taskList.get(taskNumber - 1);
             changeTask.setDone(true);
             printMessage(COMMAND_MARK_MESSAGE + System.lineSeparator() +  "\t"
                     + "[" + changeTask.getStatusIcon() + "] " + changeTask.getDescription());
@@ -183,7 +192,8 @@ public class DanChat {
         if (taskNumber > taskCount) {
             throw new IllegalTaskException(ERROR_NOT_FOUND_TASK_MESSAGE + taskNumber);
         } else {
-            Task changeTask = tasks[taskNumber - 1];
+//            Task changeTask = tasks[taskNumber - 1];
+            Task changeTask = taskList.get(taskNumber - 1);
             changeTask.setDone(false);
             printMessage(COMMAND_UNMARK_MESSAGE + System.lineSeparator() + "\t"
                     + "[" + changeTask.getStatusIcon() + "] " + changeTask.getDescription());
@@ -236,10 +246,10 @@ public class DanChat {
         return command.equals(COMMAND_UNMARK_WORD) && isValidIndex(detail);
     }
 
-    private static void initTaskList() {
-        tasks = new Task[MAX_TASK_CAPACITY];
-        taskCount = 0;
+    private static boolean isValidDeleteCommand(String command, String detail) throws InvalidIndexException {
+        return command.equals("delete") && isValidIndex(detail);
     }
+
 
     private static void showWelcomeMessage() {
         System.out.println(LINE);
@@ -254,13 +264,18 @@ public class DanChat {
         System.out.println(LINE);
     }
 
-    public static void executeListCommand(Task[] tasks) {
+//    public static void executeListCommand(Task[] tasks) {
+//        System.out.println(LINE);
+//        printTaskList(tasks);
+//        System.out.println(LINE);
+//    }
+    public static void executeListCommand(ArrayList<Task> taskList) {
         System.out.println(LINE);
-        printTaskList(tasks);
+        printTaskList(taskList);
         System.out.println(LINE);
     }
 
-    private static void printTaskList(Task[] tasks) {
+    private static void printTaskList(ArrayList<Task> tasks) {
         int taskNumber = 1; //Output index for list items, starting from 1.
         for (Task task: tasks) {
             if (task == null) {
