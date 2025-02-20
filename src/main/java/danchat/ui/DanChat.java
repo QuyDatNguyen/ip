@@ -5,15 +5,19 @@ import danchat.task.Deadline;
 import danchat.task.Event;
 import danchat.task.Task;
 import danchat.task.Todo;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.File;
+//import java.io.FileWriter;
 
-import java.lang.reflect.Array;
+//import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class DanChat {
 
     private static final String LINE = "=============================";
-    private static final int MAX_TASK_CAPACITY = 100;
+//    private static final int MAX_TASK_CAPACITY = 100;
 
     private static final String COMMAND_BYE_WORD = "bye";
     private static final String COMMAND_BYE_MESSAGE = "Bye. Hope to see you again soon!";
@@ -50,14 +54,30 @@ public class DanChat {
     private static ArrayList<Task> taskList = new ArrayList<>();
     private static int taskCount;
 
+    public static final String FILE_DIRECTORY = "tasks.txt";
+    private static File file = new File(FILE_DIRECTORY);
+
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
         showWelcomeMessage();
-//        initTaskList();
+
+        initTaskListFile();
+
         while (true) {
             String userInput = getUserInput();
             processUserInput(userInput);
+        }
+    }
+
+    private static void initTaskListFile() {
+        try {
+            if (file.createNewFile()) {
+                System.out.println("Task list file not found. Create new file at " + file.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
         }
     }
 
@@ -86,16 +106,22 @@ public class DanChat {
                 executeListCommand(taskList);
             } else if (isValidUnmarkCommand(command, detail)) {
                 executeUnmarkCommand(detail);
+                saveChangeToFile();
             } else if (isValidMarkCommand(command, detail)) {
                 executeMarkCommand(detail);
+                saveChangeToFile();
             } else if (isValidTodoCommand(command, detail)) {
                 executeTodoCommand(detail);
+                saveChangeToFile();
             } else if (isValidDeadlineCommand(command, detail)) {
                 executeDeadlineCommand(detail);
+                saveChangeToFile();
             } else if (isValidEventCommand(command, detail)) {
                 executeEventCommand(detail);
+                saveChangeToFile();
             } else if (isValidDeleteCommand(command, detail)) {
                 executeDeleteCommand(detail);
+                saveChangeToFile();
             } else {
                 throw new IllegalCommandException("Unknown Command: " + command + " " + detail);
             }
@@ -264,11 +290,6 @@ public class DanChat {
         System.out.println(LINE);
     }
 
-//    public static void executeListCommand(Task[] tasks) {
-//        System.out.println(LINE);
-//        printTaskList(tasks);
-//        System.out.println(LINE);
-//    }
     public static void executeListCommand(ArrayList<Task> taskList) {
         System.out.println(LINE);
         printTaskList(taskList);
@@ -299,6 +320,29 @@ public class DanChat {
             return true;
         } catch (NumberFormatException e) {
             return false;
+        }
+    }
+
+    private static void writeToFile(String filePath, String taskToAppend) throws IOException {
+        FileWriter fw = new FileWriter(filePath, false); // create a FileWriter in append mode
+        fw.write(taskToAppend);
+        fw.close();
+    }
+
+    private static String taskListText() {
+        String taskListText = "";
+        for (Task task: taskList) {
+            taskListText = taskListText + task + System.lineSeparator();
+        }
+        return taskListText;
+    }
+
+    private static void saveChangeToFile() {
+        String taskListText = taskListText();
+        try {
+            writeToFile(FILE_DIRECTORY, taskListText);
+        } catch (IOException e) {
+            System.out.println("Something went wrong: " + e.getMessage());
         }
     }
 }
