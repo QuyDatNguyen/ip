@@ -72,9 +72,7 @@ public class DanChat {
 
     private static void initTaskListFile() {
         try {
-            if (file.createNewFile()) {
-                System.out.println("Task list file not found. Create new file at " + file.getAbsolutePath());
-            }
+            file.createNewFile();
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
