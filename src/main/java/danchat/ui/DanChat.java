@@ -1,6 +1,11 @@
 package danchat.ui;
 
-import danchat.exception.*;
+import danchat.exception.DanException;
+import danchat.exception.EmptyTaskDetailException;
+import danchat.exception.IllegalTaskException;
+import danchat.exception.IllegalCommandException;
+import danchat.exception.InvalidIndexException;
+import danchat.exception.MissingDateException;
 import danchat.task.Deadline;
 import danchat.task.Event;
 import danchat.task.Task;
@@ -8,16 +13,12 @@ import danchat.task.Todo;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
-//import java.io.FileWriter;
-
-//import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class DanChat {
 
     private static final String LINE = "=============================";
-//    private static final int MAX_TASK_CAPACITY = 100;
 
     private static final String COMMAND_BYE_WORD = "bye";
     private static final String COMMAND_BYE_MESSAGE = "Bye. Hope to see you again soon!";
@@ -50,7 +51,6 @@ public class DanChat {
     private static final String ERROR_INVALID_INDEX_FORMAT = "Wrong index format. Index must be a positive integer";
     private static final String COMMAND_DELETE_MESSAGE = "I have deleted this task for you: ";
 
-    //    private static Task[] tasks;
     private static ArrayList<Task> taskList = new ArrayList<>();
     private static int taskCount;
 
@@ -100,7 +100,6 @@ public class DanChat {
             if (isValidByeCommand(command, detail)) {
                 executeByeCommand();
             } else if (isValidListCommand(command, detail)) {
-//                executeListCommand(tasks);
                 executeListCommand(taskList);
             } else if (isValidUnmarkCommand(command, detail)) {
                 executeUnmarkCommand(detail);
@@ -137,45 +136,52 @@ public class DanChat {
     }
 
     private static void executeEventCommand(String detail) throws MissingDateException {
-        String[] splitDetails = detail.split(EVENT_BEGIN_DATE_SEPERATOR, 2);
-        if (splitDetails.length < 2) {
-            throw new MissingDateException(ERROR_MISSING_BEGIN_DATE);
-        }
+        String[] splitDetails = splitDetail(detail, EVENT_BEGIN_DATE_SEPERATOR, ERROR_MISSING_BEGIN_DATE);
         String description = splitDetails[0].trim();
+        String eventPeriod = splitDetails[1].trim();
 
-        String duration = splitDetails[1].trim();
-        String[] splitDurations = duration.split(EVENT_END_DATE_SEPERATOR, 2);
-        if (splitDurations.length < 2) {
-            throw new MissingDateException(ERROR_MISSING_END_DATE);
-        }
+        String[] splitDurations = splitDetail(eventPeriod, EVENT_END_DATE_SEPERATOR, ERROR_MISSING_END_DATE);
         String from = splitDurations[0].trim();
         String to = splitDurations[1].trim();
 
+        addEventToTaskList(description, from, to);
+    }
+
+    private static String[] splitDetail(String detail, String separator, String errorMessage) throws MissingDateException {
+        String[] splitParts = detail.split(separator, 2);
+        if (splitParts.length < 2) {
+            throw new MissingDateException(errorMessage);
+        }
+        return splitParts;
+    }
+
+    private static void addEventToTaskList(String description, String from, String to) {
         Event event = new Event(description, from, to);
-//        tasks[taskCount] = event;
         taskList.add(event);
         taskCount++;
         printMessage(COMMAND_EVENT_MESSAGE + event);
     }
 
     private static void executeDeadlineCommand(String detail) throws MissingDateException {
-        String[] splitDetails = detail.split(DEADLINE_SEPERATOR, 2);
-        if (splitDetails.length < 2) {
-            throw new MissingDateException(ERROR_MISSING_DEADLINE_DATE);
-        }
+        String[] splitDetails = splitDetail(detail, DEADLINE_SEPERATOR, ERROR_MISSING_DEADLINE_DATE);
         String description = splitDetails[0].trim();
         String by = splitDetails[1].trim();
+        addDeadlineToTaskList(description, by);
+    }
 
+    private static void addDeadlineToTaskList(String description, String by) {
         Deadline deadline = new Deadline(description, by);
-//        tasks[taskCount] = deadline;
         taskList.add(deadline);
         taskCount++;
         printMessage(COMMAND_DEADLINE_MESSAGE + deadline);
     }
 
     private static void executeTodoCommand(String detail) {
+        addTodoToTaskList(detail);
+    }
+
+    private static void addTodoToTaskList(String detail) {
         Todo todo = new Todo(detail);
-//        tasks[taskCount] = todo;
         taskList.add(todo);
         taskCount++;
         printMessage(COMMAND_TODO_MESSAGE + todo);
@@ -203,7 +209,6 @@ public class DanChat {
         if (taskNumber > taskCount) {
             throw new IllegalTaskException(ERROR_NOT_FOUND_TASK_MESSAGE + taskNumber);
         } else {
-//            Task changeTask = tasks[taskNumber - 1];
             Task changeTask = taskList.get(taskNumber - 1);
             changeTask.setDone(true);
             printMessage(COMMAND_MARK_MESSAGE + System.lineSeparator() +  "\t"
@@ -216,7 +221,6 @@ public class DanChat {
         if (taskNumber > taskCount) {
             throw new IllegalTaskException(ERROR_NOT_FOUND_TASK_MESSAGE + taskNumber);
         } else {
-//            Task changeTask = tasks[taskNumber - 1];
             Task changeTask = taskList.get(taskNumber - 1);
             changeTask.setDone(false);
             printMessage(COMMAND_UNMARK_MESSAGE + System.lineSeparator() + "\t"
