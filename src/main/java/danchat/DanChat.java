@@ -1,4 +1,4 @@
-package danchat.ui;
+package danchat;
 
 import danchat.exception.DanException;
 import danchat.exception.EmptyTaskDetailException;
@@ -50,6 +50,7 @@ public class DanChat {
     private static final String ERROR_EMPTY_DETAIL = "Details must not be blank";
     private static final String ERROR_INVALID_INDEX_FORMAT = "Wrong index format. Index must be a positive integer";
     private static final String COMMAND_DELETE_MESSAGE = "I have deleted this task for you: ";
+    public static final String COMMAND_DELETE_WORD = "delete";
 
     private static ArrayList<Task> taskList = new ArrayList<>();
     private static int taskCount;
@@ -275,7 +276,7 @@ public class DanChat {
     }
 
     private static boolean isValidDeleteCommand(String command, String detail) throws InvalidIndexException {
-        return command.equals("delete") && isValidIndex(detail);
+        return command.equals(COMMAND_DELETE_WORD) && isValidIndex(detail);
     }
 
 
