@@ -7,7 +7,11 @@ public class Deadline extends Task{
     protected LocalDate byDate;
 
     public Deadline(String description, String by) {
-        super(description);
+        this(description, false, by);
+    }
+
+    public Deadline(String description, boolean isDone, String by) {
+        super(description, isDone);
         this.byDate = LocalDate.parse(by);
     }
 

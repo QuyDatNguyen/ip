@@ -21,7 +21,7 @@ public class MarkCommand extends Command{
             throw new IllegalTaskException(ERROR_NOT_FOUND_TASK_MESSAGE + taskNumber);
         } else {
             Task changeTask = taskList.getTask(taskNumber - 1);
-            changeTask.setDone(false);
+            changeTask.setDone(true);
             this.setCommandMessage(COMMAND_MARK_MESSAGE + System.lineSeparator() + "\t"
                     + "[" + changeTask.getStatusIcon() + "] " + changeTask.getDescription());
         }
