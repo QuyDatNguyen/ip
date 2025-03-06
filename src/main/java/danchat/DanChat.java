@@ -1,6 +1,7 @@
 package danchat;
 
 import danchat.command.Command;
+import danchat.exception.DanException;
 import danchat.parser.Parser;
 import danchat.storage.Storage;
 import danchat.task.*;
@@ -10,7 +11,6 @@ import danchat.ui.Ui;
  * Entry point of the DanChat application.
  * Initializes the application and starts the interaction with the user.
  */
-=======
 
 public class DanChat {
     private Storage storage;
@@ -26,8 +26,14 @@ public class DanChat {
     public DanChat(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
-        storage.initTaskListFile();
-        tasks = new TaskList();
+//        storage.initTaskListFile();
+//        tasks = new TaskList();
+        try {
+            tasks = storage.loadTasks();
+        } catch (DanException e) {
+            ui.showError(e.getMessage());
+            tasks = new TaskList();
+        }
     }
 
     /** Run the program until termination */
