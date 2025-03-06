@@ -63,20 +63,5 @@ public class Storage {
             System.out.println("Something went wrong: " + e.getMessage());
         }
     }
-
-//    public TaskList load() throws StorageOperationException {
-//        try {
-//            List<String> encodedTask = Files.readAllLines(Paths.get(filePath));
-//
-//        } catch (IOException e) {
-//            throw new StorageOperationException("Error writing to file: " + filePath);
-//        }
-//
-//    }
-//
-//    public static class StorageOperationException extends DanException {
-//        public StorageOperationException(String message) {
-//            super(message);
-//        }
-//    }
+    
 }
