@@ -31,6 +31,7 @@ public class Parser {
     private static final String ERROR_INVALID_INDEX_FORMAT = "Wrong index format. Index must be a positive integer";
 
     public static final String COMMAND_DELETE_WORD = "delete";
+    public static final String COMMAND_FIND_WORD = "find";
     public static final String ERROR_INVALID_DATE = "Invalid date format. Please enter valid date using YYYY-MM-DD.";
     public static final String ERROR_FROM_TO_FORMAT = "Starting must not after the ending date";
 
@@ -71,13 +72,13 @@ public class Parser {
                     return prepareEventCommand(command, detail);
                 case (COMMAND_DELETE_WORD):
                     return prepareDeleteCommand(command, detail);
+                case (COMMAND_FIND_WORD):
+                    return prepareFindCommand(command, detail);
                 default:
                     throw new IllegalCommandException("Unknown Command: " + command + " " + detail);
             }
 
         } catch (DanException e) {
-//            System.out.println("Caught Exception: " + e.getMessage());
-//            return new ErrorCommand(e.getMessage());
             throw e;
         }
     }
@@ -155,6 +156,13 @@ public class Parser {
             throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
         }
         return new TodoCommand(command, detail);
+    }
+
+    private static FindCommand prepareFindCommand(String command, String detail) throws EmptyTaskDetailException {
+        if (detail == null || detail.trim().isEmpty()) {
+            throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
+        }
+        return new FindCommand(command, detail);
     }
 
     private static Command prepareMarkCommand(String command, String detail) throws InvalidIndexException, IllegalCommandException {
