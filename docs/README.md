@@ -99,7 +99,7 @@ Delete a task from the task list
 Format: `delete INDEX`
 - Delete the task at index INDEX
 - The index must be positive integer and smaller/ equal to the list size  
-Example: `delete 3`
+Example: `delete 3`  
 ```
 ___________________________
 I have deleted this task for you: [E][ ] my homework from Jan 31 2025 to Feb 3 2025

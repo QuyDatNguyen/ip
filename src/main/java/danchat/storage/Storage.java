@@ -2,16 +2,19 @@ package danchat.storage;
 import danchat.exception.DanException;
 import danchat.exception.LoadException;
 import danchat.exception.MissingDateException;
-import danchat.task.*;
-
-import java.io.*;
+import danchat.task.Deadline;
+import danchat.task.Task;
+import danchat.task.TaskList;
+import danchat.task.Todo;
+import danchat.task.Event;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-//import static danchat.task.TaskList.innerList;
 
 public class Storage {
     private static final String DEFAULT_FILE_PATH = "tasks.txt";
