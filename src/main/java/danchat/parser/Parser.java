@@ -3,6 +3,9 @@ package danchat.parser;
 import danchat.command.*;
 import danchat.exception.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
 
 public class Parser {
     private static final String COMMAND_BYE_WORD = "bye";
@@ -16,19 +19,21 @@ public class Parser {
     private static final String COMMAND_TODO_WORD = "todo";
 
     private static final String DEADLINE_SEPERATOR = " /by ";
-    private static final String ERROR_MISSING_DEADLINE_DATE = "Missing deadline date. Please provide date after /by";
+    private static final String ERROR_MISSING_DEADLINE_INFO = "Missing content or deadline date. Please enter correct syntax: deadline task /by date";
     private static final String COMMAND_DEADLINE_WORD = "deadline";
 
     private static final String EVENT_BEGIN_DATE_SEPERATOR = " /from ";
     private static final String EVENT_END_DATE_SEPERATOR = " /to ";
-    private static final String ERROR_MISSING_BEGIN_DATE = "Missing starting date. Please provide starting date after /from";
-    private static final String ERROR_MISSING_END_DATE = "Missing ending date. Please provide ending date after /to";
+    private static final String ERROR_MISSING_EVENT_INFO = "Missing content or event date. Please enter correct syntax: event task /from startDate /to endDate";
     private static final String COMMAND_EVENT_WORD = "event";
 
     private static final String ERROR_EMPTY_DETAIL = "Details must not be blank";
     private static final String ERROR_INVALID_INDEX_FORMAT = "Wrong index format. Index must be a positive integer";
 
     public static final String COMMAND_DELETE_WORD = "delete";
+    public static final String COMMAND_FIND_WORD = "find";
+    public static final String ERROR_INVALID_DATE = "Invalid date format. Please enter valid date using YYYY-MM-DD.";
+    public static final String ERROR_FROM_TO_FORMAT = "Starting must not after the ending date";
 
     /**
      * Processing user input for execution
@@ -55,7 +60,7 @@ public class Parser {
         return new String[] {commandAndDetail[0], null};
     }
 
-    /**
+      /**
      * Parses command and detail from user input for execution
      *
      * @param command: extracted command input from user input
@@ -65,9 +70,9 @@ public class Parser {
      * @throws MissingDateException if detail does not contain any dates or miss the matching date's tags
      * @throws IllegalCommandException if the command is not recognised
      * @throws EmptyTaskDetailException if the detail is null
+     * @throws InvalidDateException if the date in detail does not follow the valid YYYY-MM-DD format
      */
-
-    private static Command parseUserCommandAndDetail(String command, String detail) throws InvalidIndexException, MissingDateException, IllegalCommandException, EmptyTaskDetailException {
+    private static Command parseUserCommandAndDetail(String command, String detail) throws InvalidIndexException, MissingDateException, IllegalCommandException, EmptyTaskDetailException, InvalidDateException {
         try {
             switch (command) {
                 case (COMMAND_BYE_WORD):
@@ -86,13 +91,13 @@ public class Parser {
                     return prepareEventCommand(command, detail);
                 case (COMMAND_DELETE_WORD):
                     return prepareDeleteCommand(command, detail);
+                case (COMMAND_FIND_WORD):
+                    return prepareFindCommand(command, detail);
                 default:
                     throw new IllegalCommandException("Unknown Command: " + command + " " + detail);
             }
 
         } catch (DanException e) {
-//            System.out.println("Caught Exception: " + e.getMessage());
-//            return new ErrorCommand(e.getMessage());
             throw e;
         }
     }
@@ -115,7 +120,7 @@ public class Parser {
         }
     }
 
-    /**
+      /**
      * Parses argument in context of event command
      *
      * @param command: user event command
@@ -123,22 +128,29 @@ public class Parser {
      * @return prepared event command
      * @throws EmptyTaskDetailException if detail is empty
      * @throws MissingDateException if miss any start, end dates or date tags (/from, /to)
+     * @throws InvalidDateException if the date in detail does not follow the valid YYYY-MM-DD format
      */
-    private static EventCommand prepareEventCommand(String command, String detail) throws EmptyTaskDetailException, MissingDateException {
+    private static EventCommand prepareEventCommand(String command, String detail) throws EmptyTaskDetailException, MissingDateException, InvalidDateException {
         if (detail == null || detail.trim().isEmpty()) {
             throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
         }
-        String[] splitDetails = splitDetail(detail, EVENT_BEGIN_DATE_SEPERATOR, ERROR_MISSING_BEGIN_DATE);
+        String[] splitDetails = splitDetail(detail, EVENT_BEGIN_DATE_SEPERATOR, ERROR_MISSING_EVENT_INFO);
         String description = splitDetails[0].trim();
         String eventPeriod = splitDetails[1].trim();
 
-        String[] splitDurations = splitDetail(eventPeriod, EVENT_END_DATE_SEPERATOR, ERROR_MISSING_END_DATE);
+        String[] splitDurations = splitDetail(eventPeriod, EVENT_END_DATE_SEPERATOR, ERROR_MISSING_EVENT_INFO);
         String from = splitDurations[0].trim();
         String to = splitDurations[1].trim();
+        if (!(isValidDateFormat(from) && isValidDateFormat(to))) {
+            throw new InvalidDateException(ERROR_INVALID_DATE);
+        }
+        if (!isValidFromToFormat(from, to)) {
+            throw new InvalidDateException(ERROR_FROM_TO_FORMAT);
+        }
         return new EventCommand(command, description, from, to);
     }
 
-    /**
+      /**
      * Parses argument in context of deadline command
      *
      * @param command: user command input
@@ -146,18 +158,41 @@ public class Parser {
      * @return prepared deadline command
      * @throws EmptyTaskDetailException if the detail is empty
      * @throws MissingDateException if miss by date  or miss tag /by
+     * @throws InvalidDateException if the date in detail does not follow the valid YYYY-MM-DD format
      */
-    private static DeadlineCommand prepareDeadlineCommand(String command, String detail) throws EmptyTaskDetailException, MissingDateException {
+    private static DeadlineCommand prepareDeadlineCommand(String command, String detail) throws EmptyTaskDetailException, MissingDateException, InvalidDateException {
         if (detail == null || detail.trim().isEmpty()) {
             throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
         }
-        String[] splitDetails = splitDetail(detail, DEADLINE_SEPERATOR, ERROR_MISSING_DEADLINE_DATE);
+        String[] splitDetails = splitDetail(detail, DEADLINE_SEPERATOR, ERROR_MISSING_DEADLINE_INFO);
         String description = splitDetails[0].trim();
         String by = splitDetails[1].trim();
+        if (!isValidDateFormat(by)) {
+            throw new InvalidDateException(ERROR_INVALID_DATE);
+        }
         return new DeadlineCommand(command, description, by);
     }
 
-    /**
+    private static boolean isValidDateFormat(String date) {
+        try {
+            LocalDate.parse(date);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    private static boolean isValidFromToFormat(String from, String to) {
+        try {
+            LocalDate fromDate = LocalDate.parse(from);
+            LocalDate toDate = LocalDate.parse(to);
+            return !fromDate.isAfter(toDate);
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+  
+      /**
      * Split details to into 2 parts, with second part is the extracted date indicated by a tag seperator
      *
      * @param detail: user detail input to be split
@@ -189,6 +224,13 @@ public class Parser {
         return new TodoCommand(command, detail);
     }
 
+    private static FindCommand prepareFindCommand(String command, String detail) throws EmptyTaskDetailException {
+        if (detail == null || detail.trim().isEmpty()) {
+            throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
+        }
+        return new FindCommand(command, detail);
+    }
+
     /**
      * Parses argument in context of mark command
      *
@@ -198,7 +240,6 @@ public class Parser {
      * @throws InvalidIndexException if the task index from detail is not valid positive integer
      * @throws IllegalCommandException if the mark command is in wrong format
      */
-
     private static Command prepareMarkCommand(String command, String detail) throws InvalidIndexException, IllegalCommandException {
         if (isValidIndex(detail)) {
             return new MarkCommand(command, detail);

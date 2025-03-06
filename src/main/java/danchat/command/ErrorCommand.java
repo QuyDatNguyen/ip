@@ -1,6 +1,4 @@
 package danchat.command;
-
-import danchat.task.Task;
 import danchat.task.TaskList;
 
 /**

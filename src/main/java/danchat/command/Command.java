@@ -1,5 +1,4 @@
 package danchat.command;
-
 import danchat.exception.DanException;
 import danchat.storage.Storage;
 import danchat.task.TaskList;
@@ -33,7 +32,7 @@ public class Command {
         try {
             executeCommand(taskList);
             ui.showCommandMessage(this.getCommandMessage());
-            storage.saveChangeToFile();
+            storage.saveChangeToFile(taskList);
             if (this.isExit()) {
                 System.exit(0);
             }
