@@ -1,25 +1,18 @@
 # DanChat User Guide
 
-// Update the title above to match the actual product name
 
-// Product screenshot goes here
-
-// Product intro goes here
 ## Introduction  
 DanChat is a desktop chatbox for managing tasks, optimize for use via Command Line Interface (CLI)
 
 ## Features  
-:heavy_exclamation_mark:__Notes to user__:  
+__Notes to user__:  
 Words in UPPER_CASE are parameters to be supplied by user  
 e.g: in todo TASK, TASK is a parameter which can be used as todo do homework
-### Adding task with no date: todo  
-// Describe the action and its outcome.
+### Adding task with no date: todo
 Add a new task needs to be done without any specified deadlines/ time period  
-Format: `todo TASK`  
-// Give examples of usage
+Format: `todo TASK`
 Example: `todo do homework`  
 - The task's status is assigned as not done by default.
-// A description of the expected outcome goes here
 ```
 ___________________________
 Add new todo in your list: [T][ ] homework
