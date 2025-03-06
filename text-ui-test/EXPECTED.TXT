@@ -32,27 +32,3 @@ Caught Exception: Unfounded task with index 2
 Caught Exception: Details must not be blank
 Caught Exception: Missing deadline date. Please provide date after /by
 Caught Exception: Missing deadline date. Please provide date after /by
-=============================
-	Add new deadline in your list: [D][ ] deadline with date by dl date
-=============================
-=============================
-	1. [T][X] add new todo event
-	2. [D][ ] deadline with date by dl date
-=============================
-Caught Exception: Details must not be blank
-Caught Exception: Missing starting date. Please provide starting date after /from
-Caught Exception: Missing starting date. Please provide starting date after /from
-Caught Exception: Missing starting date. Please provide starting date after /from
-Caught Exception: Missing ending date. Please provide ending date after /to
-Caught Exception: Missing ending date. Please provide ending date after /to
-=============================
-	Add new event in your list: [E][ ] event with dates from start to end
-=============================
-=============================
-	1. [T][X] add new todo event
-	2. [D][ ] deadline with date by dl date
-	3. [E][ ] event with dates from start to end
-=============================
-=============================
-	Bye. Hope to see you again soon!
-=============================

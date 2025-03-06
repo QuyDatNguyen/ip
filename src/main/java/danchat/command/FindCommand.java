@@ -26,7 +26,7 @@ public class FindCommand extends Command{
     }
 
     private static String convertResultToString(HashMap<Integer, Task> findResult) {
-        String message = "";
+        String message = "Here is your tasks: " + System.lineSeparator();
         for (Map.Entry<Integer, Task> entry: findResult.entrySet()) {
             if (entry.getValue() == null) {
                 break;
