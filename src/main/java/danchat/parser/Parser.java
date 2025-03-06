@@ -173,6 +173,12 @@ public class Parser {
         return new DeadlineCommand(command, description, by);
     }
 
+    /**
+     * Checking if user's string data is at correct YYYY-MM-DD format
+     *
+     * @param date the user date to be checked
+     * @return true if date is in correct format
+     */
     private static boolean isValidDateFormat(String date) {
         try {
             LocalDate.parse(date);
@@ -182,6 +188,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Checking if event's starting and ending date are at correct YYYY-MM-DD format
+     * and the starting date is not after the ending date
+     * @param from the event starting date
+     * @param to the event ending date
+     * @return true if both dates satisfies both format and start-end date condition
+     */
     private static boolean isValidFromToFormat(String from, String to) {
         try {
             LocalDate fromDate = LocalDate.parse(from);
@@ -192,7 +205,7 @@ public class Parser {
         }
     }
   
-      /**
+    /**
      * Split details to into 2 parts, with second part is the extracted date indicated by a tag seperator
      *
      * @param detail: user detail input to be split
@@ -224,6 +237,14 @@ public class Parser {
         return new TodoCommand(command, detail);
     }
 
+    /**
+     * Parses argument in context of find command
+     *
+     * @param command: user find command
+     * @param detail: the keyword for searching
+     * @return prepared find command
+     * @throws EmptyTaskDetailException if the detail is empty
+     */
     private static FindCommand prepareFindCommand(String command, String detail) throws EmptyTaskDetailException {
         if (detail == null || detail.trim().isEmpty()) {
             throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
