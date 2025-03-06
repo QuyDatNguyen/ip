@@ -4,6 +4,9 @@ import danchat.exception.IllegalTaskException;
 import danchat.task.Task;
 import danchat.task.TaskList;
 
+/**
+ * Mark a task as done
+ */
 public class MarkCommand extends Command{
     private static final String ERROR_NOT_FOUND_TASK_MESSAGE = "Unfounded task with index ";
     private static final String COMMAND_MARK_MESSAGE = "Ok, I have marked this task as done";

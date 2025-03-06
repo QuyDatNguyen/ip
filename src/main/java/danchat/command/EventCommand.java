@@ -3,6 +3,9 @@ package danchat.command;
 import danchat.task.Event;
 import danchat.task.TaskList;
 
+/**
+ * Add new event to task list
+ */
 public class EventCommand extends Command {
     public Event event;
     private static final String COMMAND_EVENT_MESSAGE = "Add new event in your list: ";

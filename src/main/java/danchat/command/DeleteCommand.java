@@ -4,6 +4,9 @@ import danchat.exception.IllegalTaskException;
 import danchat.task.Task;
 import danchat.task.TaskList;
 
+/**
+ * Delete a task from task list
+ */
 public class DeleteCommand extends Command {
     private static final String ERROR_NOT_FOUND_TASK_MESSAGE = "Unfounded task with index ";
     private static final String COMMAND_DELETE_MESSAGE = "I have deleted this task for you: ";

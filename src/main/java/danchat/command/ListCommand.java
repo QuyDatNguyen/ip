@@ -3,6 +3,9 @@ package danchat.command;
 import danchat.task.Task;
 import danchat.task.TaskList;
 
+/**
+ * Show all events inside the task list to user
+ */
 public class ListCommand  extends Command{
 //    private static final String LINE = "=============================";
     public ListCommand(String command, String detail) {
