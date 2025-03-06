@@ -20,6 +20,10 @@ public class Storage {
         file = new File(this.filePath);
     }
 
+    /**
+     * Check for file at given filePath and create new storage file if no file exists.
+     */
+
     public void initTaskListFile() {
         try {
             file.createNewFile();
@@ -43,6 +47,12 @@ public class Storage {
         }
         return taskListText;
     }
+
+    ?
+
+    /**
+     * Overwriting the old file with new text containing changes to taskList
+     */
 
     public void saveChangeToFile() {
         String taskListText = taskListText();

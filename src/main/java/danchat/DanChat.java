@@ -17,12 +17,21 @@ import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
-
+/**
+ * Entry point of the DanChat application.
+ * Initializes the application and starts the interaction with the user.
+ */
 public class DanChat {
     private Storage storage;
     private TaskList tasks;
     private Ui ui;
 
+    /**
+     * Set up the required objects, initialize new storage file
+     *
+     * @param filePath argument supplied by user at the beginning of program
+     *
+     */
     public DanChat(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -36,6 +45,8 @@ public class DanChat {
 //            tasks = new TaskList();
 //        }
     }
+
+    /** Run the program until termination */
 
     public void run() {
         //...
