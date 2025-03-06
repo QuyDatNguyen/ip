@@ -1,10 +1,12 @@
 package danchat.storage;
 import danchat.task.Task;
+import danchat.task.TaskList;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import static danchat.task.TaskList.innerList;
+//import static danchat.task.TaskList.innerList;
 
 public class Storage {
     private static final String DEFAULT_FILE_PATH = "tasks.txt";
@@ -36,16 +38,16 @@ public class Storage {
         fw.close();
     }
 
-    private String taskListText() {
+    private String taskListText(TaskList taskList) {
         String taskListText = "";
-        for (Task task: innerList) {
+        for (Task task: taskList.getInnerList()) {
             taskListText = taskListText + task + System.lineSeparator();
         }
         return taskListText;
     }
 
-    public void saveChangeToFile() {
-        String taskListText = taskListText();
+    public void saveChangeToFile(TaskList taskList) {
+        String taskListText = taskListText(taskList);
         try {
             writeToFile(taskListText);
         } catch (IOException e) {

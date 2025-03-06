@@ -1,5 +1,4 @@
 package danchat.command;
-
 import danchat.task.TaskList;
 
 public class ByeCommand extends Command{

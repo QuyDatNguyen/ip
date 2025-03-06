@@ -6,7 +6,8 @@ import java.util.Collection;
 import java.util.List;
 
 public class TaskList {
-    public static ArrayList<Task> innerList = new ArrayList<>();
+    public static final String EMPTY_TASK_LIST_MESSAGE = "Task list is currently empty";
+    protected ArrayList<Task> innerList = new ArrayList<>();
 
     /**
      * Construct empty task list
@@ -49,5 +50,25 @@ public class TaskList {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public ArrayList<Task> getInnerList() {
+        return innerList;
+    }
+
+    @Override
+    public String toString() {
+        if (innerList.isEmpty()) {
+            return EMPTY_TASK_LIST_MESSAGE;
+        }
+        String outString = "";
+        for (Task task: innerList) {
+            if (task == null) {
+                break;
+            }
+            int taskNumber = innerList.indexOf(task) + 1;
+            outString = outString + "\t" + taskNumber + ". " + task + System.lineSeparator();
+        }
+        return outString;
     }
 }
