@@ -1,25 +1,26 @@
 package danchat.storage;
-
-import danchat.exception.DanException;
 import danchat.task.Task;
-import danchat.task.TaskList;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 
 import static danchat.task.TaskList.innerList;
 
 public class Storage {
-    public static final String DEFAULT_FILE_PATH = "tasks.txt";
-    private static File file = new File(DEFAULT_FILE_PATH);
-    public static Path filePath = Paths.get(DEFAULT_FILE_PATH);
+    private static final String DEFAULT_FILE_PATH = "tasks.txt";
+    private static File file;
+    private String filePath;
 
-    private static void initTaskListFile() {
+    public Storage () {
+        this(DEFAULT_FILE_PATH);
+    }
+
+    public Storage (String filePath) {
+        this.filePath = filePath;
+        file = new File(this.filePath);
+    }
+
+    public void initTaskListFile() {
         try {
             file.createNewFile();
         } catch (IOException e) {
@@ -27,22 +28,23 @@ public class Storage {
             e.printStackTrace();
         }
     }
-    private static void writeToFile(String taskToAppend) throws IOException {
+
+
+    private void writeToFile(String taskToAppend) throws IOException {
         FileWriter fw = new FileWriter(Storage.DEFAULT_FILE_PATH, false); // create a FileWriter in append mode
         fw.write(taskToAppend);
         fw.close();
     }
 
-    private static String taskListText() {
+    private String taskListText() {
         String taskListText = "";
-        for (Task task:
-                innerList) {
+        for (Task task: innerList) {
             taskListText = taskListText + task + System.lineSeparator();
         }
         return taskListText;
     }
 
-    private static void saveChangeToFile() {
+    public void saveChangeToFile() {
         String taskListText = taskListText();
         try {
             writeToFile(taskListText);
@@ -53,7 +55,8 @@ public class Storage {
 
 //    public TaskList load() throws StorageOperationException {
 //        try {
-//            List<String> encodedTaskList = Files.readAllLines(filePath);
+//            List<String> encodedTask = Files.readAllLines(Paths.get(filePath));
+//
 //        } catch (IOException e) {
 //            throw new StorageOperationException("Error writing to file: " + filePath);
 //        }

@@ -4,99 +4,54 @@ What can I do for you?
 =============================
 =============================
 =============================
-=============================
-	added: add a default task
-=============================
+Caught Exception: Unknown Command: add but not valid command
+Caught Exception: Details must not be blank
 =============================
 	Add new todo in your list: [T][ ] add new todo event
 =============================
 =============================
-	1. [ ] add a default task
-	2. [T][ ] add new todo event
+	1. [T][ ] add new todo event
 =============================
+Caught Exception: Unfounded task with index 2
+Caught Exception: Wrong index format. Index must be a positive integer
+Caught Exception: Wrong index format. Index must be a positive integer
 =============================
 	Nice! I have marked this task as done
 	[X] add new todo event
 =============================
 =============================
-	1. [ ] add a default task
-	2. [T][X] add new todo event
+	1. [T][X] add new todo event
 =============================
+Caught Exception: Unfounded task with index 2
+Caught Exception: Wrong index format. Index must be a positive integer
+Caught Exception: Wrong index format. Index must be a positive integer
+Caught Exception: Unfounded task with index 2
 =============================
-	added: mark -1
+	1. [T][X] add new todo event
 =============================
-=============================
-	Ok, I have marked this task as not done yet
-	[ ] add new todo event
-=============================
-=============================
-	added: unmark
-=============================
-=============================
-	1. [ ] add a default task
-	2. [T][ ] add new todo event
-	3. [ ] mark -1
-	4. [ ] unmark
-=============================
-=============================
-	added: mark as a task
-=============================
-=============================
-	added: unmark as a task
-=============================
-=============================
-	1. [ ] add a default task
-	2. [T][ ] add new todo event
-	3. [ ] mark -1
-	4. [ ] unmark
-	5. [ ] mark as a task
-	6. [ ] unmark as a task
-=============================
-=============================
-	Please provide date after /by
-=============================
-=============================
-	Please provide date after /by
-=============================
+Caught Exception: Details must not be blank
+Caught Exception: Missing deadline date. Please provide date after /by
+Caught Exception: Missing deadline date. Please provide date after /by
 =============================
 	Add new deadline in your list: [D][ ] deadline with date by dl date
 =============================
 =============================
-	1. [ ] add a default task
-	2. [T][ ] add new todo event
-	3. [ ] mark -1
-	4. [ ] unmark
-	5. [ ] mark as a task
-	6. [ ] unmark as a task
-	7. [D][ ] deadline with date by dl date
+	1. [T][X] add new todo event
+	2. [D][ ] deadline with date by dl date
 =============================
-=============================
-	Please provide starting date after /from
-=============================
-=============================
-	Please provide starting date after /from
-=============================
-=============================
-	Please provide starting date after /from
-=============================
-=============================
-	Please provide ending date after /to
-=============================
-=============================
-	Please provide ending date after /to
-=============================
+Caught Exception: Details must not be blank
+Caught Exception: Missing starting date. Please provide starting date after /from
+Caught Exception: Missing starting date. Please provide starting date after /from
+Caught Exception: Missing starting date. Please provide starting date after /from
+Caught Exception: Missing ending date. Please provide ending date after /to
+Caught Exception: Missing ending date. Please provide ending date after /to
 =============================
 	Add new event in your list: [E][ ] event with dates from start to end
 =============================
 =============================
-	1. [ ] add a default task
-	2. [T][ ] add new todo event
-	3. [ ] mark -1
-	4. [ ] unmark
-	5. [ ] mark as a task
-	6. [ ] unmark as a task
-	7. [D][ ] deadline with date by dl date
-	8. [E][ ] event with dates from start to end
+	1. [T][X] add new todo event
+	2. [D][ ] deadline with date by dl date
+	3. [E][ ] event with dates from start to end
 =============================
 =============================
 	Bye. Hope to see you again soon!

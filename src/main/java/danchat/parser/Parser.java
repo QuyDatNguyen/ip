@@ -31,10 +31,14 @@ public class Parser {
     public static final String COMMAND_DELETE_WORD = "delete";
 
     public static Command processUserInput(String userInput) {
-        String[] splitInput = splitCommandAndDetail(userInput);
-        String command = splitInput[0];
-        String detail = splitInput[1];
-        return parseUserCommandAndDetail(command, detail);
+        try {
+            String[] splitInput = splitCommandAndDetail(userInput);
+            String command = splitInput[0];
+            String detail = splitInput[1];
+            return parseUserCommandAndDetail(command, detail);
+        } catch (DanException e) {
+            return new ErrorCommand(e.getMessage());
+        }
     }
     public static String[] splitCommandAndDetail(String userInput) {
         String[] commandAndDetail = userInput.split(" ", 2);
@@ -44,7 +48,7 @@ public class Parser {
         return new String[] {commandAndDetail[0], null};
     }
 
-    private static Command parseUserCommandAndDetail(String command, String detail) {
+    private static Command parseUserCommandAndDetail(String command, String detail) throws InvalidIndexException, MissingDateException, IllegalCommandException, EmptyTaskDetailException {
         try {
             switch (command) {
                 case (COMMAND_BYE_WORD):
@@ -68,8 +72,9 @@ public class Parser {
             }
 
         } catch (DanException e) {
-            System.out.println("Caught Exception: " + e.getMessage());
-            return null;
+//            System.out.println("Caught Exception: " + e.getMessage());
+//            return new ErrorCommand(e.getMessage());
+            throw e;
         }
     }
 

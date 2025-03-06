@@ -22,7 +22,7 @@ public class UnmarkCommand extends Command{
         } else {
             Task changeTask = taskList.getTask(taskNumber - 1);
             changeTask.setDone(false);
-            printMessage(COMMAND_UNMARK_MESSAGE + System.lineSeparator() + "\t"
+            this.setCommandMessage(COMMAND_UNMARK_MESSAGE + System.lineSeparator() + "\t"
                     + "[" + changeTask.getStatusIcon() + "] " + changeTask.getDescription());
         }
     }

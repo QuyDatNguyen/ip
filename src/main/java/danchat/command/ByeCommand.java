@@ -11,7 +11,8 @@ public class ByeCommand extends Command{
     }
     @Override
     public void executeCommand(TaskList taskList) {
-        printMessage(COMMAND_BYE_MESSAGE);
-        System.exit(0);
+        this.setExit(true);
+        this.setCommandMessage(COMMAND_BYE_MESSAGE);
+//        System.exit(0);
     }
 }

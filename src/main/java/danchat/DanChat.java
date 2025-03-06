@@ -1,15 +1,17 @@
 package danchat;
 
+import danchat.command.Command;
+import danchat.parser.Parser;
 import danchat.exception.DanException;
 import danchat.exception.EmptyTaskDetailException;
 import danchat.exception.IllegalTaskException;
 import danchat.exception.IllegalCommandException;
 import danchat.exception.InvalidIndexException;
 import danchat.exception.MissingDateException;
-import danchat.task.Deadline;
-import danchat.task.Event;
-import danchat.task.Task;
-import danchat.task.Todo;
+import danchat.storage.Storage;
+import danchat.task.*;
+import danchat.ui.Ui;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.File;
@@ -17,7 +19,55 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class DanChat {
+    private Storage storage;
+    private TaskList tasks;
+    private Ui ui;
 
+    public DanChat(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        storage.initTaskListFile();
+        tasks = new TaskList();
+//        try {
+////            tasks = new TaskList(storage.load());
+//            storage.initTaskListFile();
+//        } catch (DanException e) {
+//            ui.showError(e.getMessage());
+//            tasks = new TaskList();
+//        }
+    }
+
+    public void run() {
+        //...
+        ui.showWelcome();
+        boolean isExit = false;
+        while (!isExit) {
+//            try {
+//                String fullCommand = ui.readCommand();
+//                ui.showLine(); // show the divider line ("_______")
+//                Command c = Parser.processUserInput(fullCommand);
+//                c.execute(tasks, storage);
+//                isExit = c.isExit();
+//            } catch (DanException e) {
+//                ui.showError(e.getMessage());
+//            } finally {
+//                ui.showLine();
+//            }
+                String fullCommand = ui.readCommand();
+                ui.showLine(); // show the divider line ("_______")
+                Command c = Parser.processUserInput(fullCommand);
+                c.execute(tasks, storage, ui); //Error when c is null
+                isExit = c.isExit();
+                ui.showLine();
+        }
+    }
+
+    public static void main(String[] args) {
+        new DanChat("tasks.txt").run();
+    }
+
+
+/**
     private static final String LINE = "=============================";
 
     private static final String COMMAND_BYE_WORD = "bye";
@@ -348,4 +398,5 @@ public class DanChat {
             System.out.println("Something went wrong: " + e.getMessage());
         }
     }
+ */
 }

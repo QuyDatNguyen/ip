@@ -2,6 +2,7 @@ package danchat.task;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class TaskList {
@@ -15,6 +16,9 @@ public class TaskList {
     public TaskList(Task... tasks) {
         final List<Task> initialTags = Arrays.asList(tasks);
         innerList.addAll(initialTags);
+    }
+    public TaskList(Collection<Task> tasks) {
+        innerList.addAll(tasks);
     }
     /**
      * @return size of task list

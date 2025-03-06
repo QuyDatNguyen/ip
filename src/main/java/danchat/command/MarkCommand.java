@@ -20,7 +20,7 @@ public class MarkCommand extends Command{
         } else {
             Task changeTask = taskList.getTask(taskNumber - 1);
             changeTask.setDone(false);
-            printMessage(COMMAND_MARK_MESSAGE + System.lineSeparator() + "\t"
+            this.setCommandMessage(COMMAND_MARK_MESSAGE + System.lineSeparator() + "\t"
                     + "[" + changeTask.getStatusIcon() + "] " + changeTask.getDescription());
         }
     }

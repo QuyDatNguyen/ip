@@ -21,7 +21,7 @@ public class DeleteCommand extends Command {
         } else {
             Task deleteTask = taskList.getTask(taskNumber - 1);
             taskList.deleteTask(taskNumber - 1);
-            printMessage(COMMAND_DELETE_MESSAGE + deleteTask);
+            this.setCommandMessage(COMMAND_DELETE_MESSAGE + deleteTask);
         }
     }
 }
