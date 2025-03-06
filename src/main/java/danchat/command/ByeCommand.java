@@ -1,6 +1,9 @@
 package danchat.command;
 import danchat.task.TaskList;
 
+/**
+ * Terminates the program
+ */
 public class ByeCommand extends Command{
     private static final String LINE = "=============================";
     private static final String COMMAND_BYE_WORD = "bye";

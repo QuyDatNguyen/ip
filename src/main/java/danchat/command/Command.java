@@ -4,6 +4,9 @@ import danchat.storage.Storage;
 import danchat.task.TaskList;
 import danchat.ui.Ui;
 
+/**
+ * Represent an executable command
+ */
 public class Command {
 //    protected static final String LINE = "=============================";
     protected String command;
@@ -11,11 +14,6 @@ public class Command {
     protected String commandMessage;
     protected boolean isExit = false;
 
-
-    /**
-     * Create an empty command as a placeholder
-     *
-     */
     public Command() {}
 
     public Command(String command, String detail) {
@@ -23,6 +21,13 @@ public class Command {
         this.detail = detail;
     }
 
+    /**
+     * Execute the command, save the changes and return the result to user
+     *
+     * @param taskList the task list that user executes command to
+     * @param storage storage file to save the result
+     * @param ui user interface to display the result
+     */
     public void execute(TaskList taskList, Storage storage, Ui ui) {
         try {
             executeCommand(taskList);
@@ -36,6 +41,13 @@ public class Command {
 //            throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Execute the user command
+     *
+     * @param taskList the task list that user executes command to
+     * @throws DanException if the method is not called by specific command child classes
+     */
 
     public void executeCommand(TaskList taskList) throws DanException {
         throw new DanException("This method is operated by child classes");

@@ -2,6 +2,9 @@ package danchat.command;
 import danchat.task.Deadline;
 import danchat.task.TaskList;
 
+/**
+ * Add new deadline to task list
+ */
 public class DeadlineCommand extends Command{
     public Deadline deadline;
     private static final String COMMAND_DEADLINE_MESSAGE = "Add new deadline in your list: ";
@@ -10,6 +13,7 @@ public class DeadlineCommand extends Command{
         this.command = command;
         this.deadline = new Deadline(description, by);
     }
+
     @Override
     public void executeCommand(TaskList taskList) {
         taskList.addTask(deadline);

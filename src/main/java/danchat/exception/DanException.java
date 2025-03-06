@@ -1,5 +1,6 @@
 package danchat.exception;
 
+
 public class DanException extends Exception{
     protected String message;
     public DanException(String message) {

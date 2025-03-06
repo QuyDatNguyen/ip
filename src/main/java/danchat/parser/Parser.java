@@ -35,6 +35,12 @@ public class Parser {
     public static final String ERROR_INVALID_DATE = "Invalid date format. Please enter valid date using YYYY-MM-DD.";
     public static final String ERROR_FROM_TO_FORMAT = "Starting must not after the ending date";
 
+    /**
+     * Processing user input for execution
+     *
+     * @param userInput: full user input string
+     * @return command based on user input
+     */
     public static Command processUserInput(String userInput) {
         try {
             String[] splitInput = splitCommandAndDetail(userInput);
@@ -45,6 +51,7 @@ public class Parser {
             return new ErrorCommand(e.getMessage());
         }
     }
+
     public static String[] splitCommandAndDetail(String userInput) {
         String[] commandAndDetail = userInput.split(" ", 2);
         if (commandAndDetail.length == 2) {
@@ -53,6 +60,18 @@ public class Parser {
         return new String[] {commandAndDetail[0], null};
     }
 
+      /**
+     * Parses command and detail from user input for execution
+     *
+     * @param command: extracted command input from user input
+     * @param detail: additional details for command's execution
+     * @return the command based on user input
+     * @throws InvalidIndexException if the index from detail is not valid positive integer
+     * @throws MissingDateException if detail does not contain any dates or miss the matching date's tags
+     * @throws IllegalCommandException if the command is not recognised
+     * @throws EmptyTaskDetailException if the detail is null
+     * @throws InvalidDateException if the date in detail does not follow the valid YYYY-MM-DD format
+     */
     private static Command parseUserCommandAndDetail(String command, String detail) throws InvalidIndexException, MissingDateException, IllegalCommandException, EmptyTaskDetailException, InvalidDateException {
         try {
             switch (command) {
@@ -83,14 +102,34 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses argument in context of delete command
+     *
+     * @param command: user delete command
+     * @param detail: index of task to be deleted
+     * @return prepared delete command
+     * @throws InvalidIndexException if index of task is not positive integer
+     * @throws IllegalCommandException if delete command format is incorrect
+     */
+
     private static DeleteCommand prepareDeleteCommand(String command, String detail) throws InvalidIndexException, IllegalCommandException {
         if (isValidIndex(detail)) {
             return new DeleteCommand(command, detail);
         } else {
-            throw new IllegalCommandException("Wrong mark command format");
+            throw new IllegalCommandException("Wrong delete command format");
         }
     }
 
+      /**
+     * Parses argument in context of event command
+     *
+     * @param command: user event command
+     * @param detail: full details on event's description, start and end date from user input
+     * @return prepared event command
+     * @throws EmptyTaskDetailException if detail is empty
+     * @throws MissingDateException if miss any start, end dates or date tags (/from, /to)
+     * @throws InvalidDateException if the date in detail does not follow the valid YYYY-MM-DD format
+     */
     private static EventCommand prepareEventCommand(String command, String detail) throws EmptyTaskDetailException, MissingDateException, InvalidDateException {
         if (detail == null || detail.trim().isEmpty()) {
             throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
@@ -111,6 +150,16 @@ public class Parser {
         return new EventCommand(command, description, from, to);
     }
 
+      /**
+     * Parses argument in context of deadline command
+     *
+     * @param command: user command input
+     * @param detail: full details on deadline's description and by date from user input
+     * @return prepared deadline command
+     * @throws EmptyTaskDetailException if the detail is empty
+     * @throws MissingDateException if miss by date  or miss tag /by
+     * @throws InvalidDateException if the date in detail does not follow the valid YYYY-MM-DD format
+     */
     private static DeadlineCommand prepareDeadlineCommand(String command, String detail) throws EmptyTaskDetailException, MissingDateException, InvalidDateException {
         if (detail == null || detail.trim().isEmpty()) {
             throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
@@ -142,7 +191,16 @@ public class Parser {
             return false;
         }
     }
-
+  
+      /**
+     * Split details to into 2 parts, with second part is the extracted date indicated by a tag seperator
+     *
+     * @param detail: user detail input to be split
+     * @param separator: tag to separate date from other details
+     * @param errorMessage: prepared error message if cannot split date from other details
+     * @return other part of details and the date after splitting
+     * @throws MissingDateException if you cannot find or split the date
+     */
     private static String[] splitDetail(String detail, String separator, String errorMessage) throws MissingDateException {
         String[] splitParts = detail.split(separator, 2);
         if (splitParts.length < 2) {
@@ -151,6 +209,14 @@ public class Parser {
         return splitParts;
     }
 
+    /**
+     * Parses argument in context of todo command
+     *
+     * @param command: user todo command
+     * @param detail: description of the todo task
+     * @return prepared todo command
+     * @throws EmptyTaskDetailException if detail is empty
+     */
     private static TodoCommand prepareTodoCommand(String command, String detail) throws EmptyTaskDetailException {
         if (detail == null || detail.trim().isEmpty()) {
             throw new EmptyTaskDetailException(ERROR_EMPTY_DETAIL);
@@ -165,6 +231,15 @@ public class Parser {
         return new FindCommand(command, detail);
     }
 
+    /**
+     * Parses argument in context of mark command
+     *
+     * @param command: user mark command
+     * @param detail: the position of task to be marked
+     * @return prepared mark command
+     * @throws InvalidIndexException if the task index from detail is not valid positive integer
+     * @throws IllegalCommandException if the mark command is in wrong format
+     */
     private static Command prepareMarkCommand(String command, String detail) throws InvalidIndexException, IllegalCommandException {
         if (isValidIndex(detail)) {
             return new MarkCommand(command, detail);
@@ -173,6 +248,15 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses argument in context of unmark command
+     *
+     * @param command: user unmark command
+     * @param detail: the position of task to be unmarked
+     * @return prepared unmark command
+     * @throws InvalidIndexException if the task index from detail is not valid positive integer
+     * @throws IllegalCommandException if the unmark command is in wrong format
+     */
     private static UnmarkCommand prepareUnmarkCommand(String command, String detail) throws InvalidIndexException, IllegalCommandException {
         if (isValidIndex(detail)) {
             return new UnmarkCommand(command, detail);
@@ -181,6 +265,14 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses argument in context of list command
+     *
+     * @param command: user list command
+     * @param detail: user detail command, which should be null
+     * @return prepared list command
+     * @throws IllegalCommandException if the detail is not null
+     */
     private static ListCommand prepareListCommand(String command, String detail) throws IllegalCommandException {
         if (detail != null) {
             throw new IllegalCommandException("Wrong list command format");
@@ -188,6 +280,14 @@ public class Parser {
         return new ListCommand(command, null);
     }
 
+    /**
+     * Parses argument in context of bye command
+     *
+     * @param command: user bye command
+     * @param detail: user detail command, which should be null
+     * @return prepared bye command
+     * @throws IllegalCommandException if the detail is not null
+     */
     private static ByeCommand prepareByeCommand(String command, String detail) throws IllegalCommandException {
         if (detail != null) {
             throw new IllegalCommandException("Wrong bye command format");
