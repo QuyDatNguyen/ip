@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Finding the task and its corresponding index inside task list from user keyword
+ */
 public class FindCommand extends Command{
     public FindCommand(String command, String detail) {
         super(command, detail);
