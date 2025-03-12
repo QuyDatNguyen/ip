@@ -7,9 +7,7 @@ import danchat.task.TaskList;
  * Mark a task as not done
  */
 public class UnmarkCommand extends Command{
-    private static final String LINE = "=============================";
     private static final String ERROR_NOT_FOUND_TASK_MESSAGE = "Unfounded task with index ";
-    private static final String COMMAND_UNMARK_WORD = "unmark";
     private static final String COMMAND_UNMARK_MESSAGE = "Ok, I have marked this task as not done yet";
     private int taskNumber;
     public UnmarkCommand(String command, String detail) {

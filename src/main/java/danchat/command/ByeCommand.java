@@ -15,6 +15,5 @@ public class ByeCommand extends Command{
     public void executeCommand(TaskList taskList) {
         this.setExit(true);
         this.setCommandMessage(COMMAND_BYE_MESSAGE);
-//        System.exit(0);
     }
 }

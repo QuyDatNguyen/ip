@@ -8,7 +8,6 @@ import danchat.ui.Ui;
  * Represent an executable command
  */
 public class Command {
-//    protected static final String LINE = "=============================";
     protected String command;
     protected String detail;
     protected String commandMessage;
@@ -38,7 +37,6 @@ public class Command {
             }
         } catch (DanException e) {
             ui.showError(e.getMessage());
-//            throw new RuntimeException(e);
         }
     }
 
@@ -51,10 +49,6 @@ public class Command {
 
     public void executeCommand(TaskList taskList) throws DanException {
         throw new DanException("This method is operated by child classes");
-    }
-
-    public static void printMessage(String message) {
-        System.out.println(message);
     }
 
     public void setExit(boolean isExit) {
